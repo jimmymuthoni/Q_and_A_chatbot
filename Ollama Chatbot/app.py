@@ -1,31 +1,28 @@
-import streamlit as st
-from dotenv import load_dotenv
-import openai
-from langchain_openai import ChatOpenAI
-from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_community.llms import Ollama
+import streamlit as st
 import os
+from dotenv import load_dotenv
 load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY ")
 
 #setting langsmith tracking
 os.environ['LANGCHAIN_API_KEY'] = os.getenv("LANGCHAIN_API_KEY")
 os.environ['LANGCHAIN_TRACING_V2'] = "true"
-os.environ['LANGCHAIN_PROJECT'] = "Q&A Chatbot with OPENAI"
+os.environ['LANGCHAIN_PROJECT'] = "Q&A Chatbot with Ollama"
 
 
-#prompts
+## prompt template
 prompt = ChatPromptTemplate.from_messages(
     [
-        ("system", "You are a helpful assistant. Please provide reponse to the user queries"),
-        ("user", "Question:{question}")
+        ("system", "You are a helpful assistant. Please respond to the user queries."),
+        ("user", "Question: {question}")
     ]
 )
 
-
 #function to generate response
-def generate_response(question,llm, temperature, max_tokens):
-    llm = ChatOpenAI(model=llm, api_key = api_key)
+def generate_response(question,llm, engine,temperature, max_tokens):
+    llm = Ollama(model=engine)
     ouput_parser = StrOutputParser()
     chain = prompt | llm | ouput_parser
     answer = chain.invoke({"question": question})
@@ -52,3 +49,4 @@ if user_input:
 
 else:
     st.write("Please provide the question.")
+
