@@ -29,11 +29,8 @@ def generate_response(question,llm, engine,temperature, max_tokens):
     return answer
 
 # setting up the UI
-st.title("Q&A Chatbot With OpenAI")
+st.title("Q&A Chatbot With Ollama")
 st.sidebar.title("Settings")
-
-#drop down to select models
-llm = st.sidebar.selectbox("Select an Open AI model", ["gpt-4-o", "gpt-4-turbo", "gpt-4"])
 
 #response parametes
 temperature = st.sidebar.slider("Tempearture", min_value = 0.0, max_value = 1.0, value = 0.7)
@@ -44,7 +41,7 @@ max_tokens = st.sidebar.slider("Max Tokens", min_value = 20, max_value = 100, va
 st.write("Go ahead and ask any question:")
 user_input = st.text_input("You:")
 if user_input:
-    response = generate_response(user_input, llm, temperature, max_tokens)
+    response = generate_response(user_input, engine=engine, temperature, max_tokens)
     st.write(response)
 
 else:
